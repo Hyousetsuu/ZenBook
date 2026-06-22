@@ -2,6 +2,9 @@ import React, { useState, useEffect } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import { getBooks, getRecommendations } from '../services/api';
 import BookCard from '../components/BookCard';
+import LoadingSpinner from '../components/LoadingSpinner';
+import ErrorMessage from '../components/ErrorMessage';
+import EmptyState from '../components/EmptyState';
 import './BookDetailPage.css';
 
 function BookDetailPage() {
@@ -13,51 +16,51 @@ function BookDetailPage() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
-  useEffect(() => {
-    const fetchData = async () => {
-      setLoading(true);
-      setError(null);
-      window.scrollTo(0, 0); // Scroll to top when route changes
+  const fetchData = async () => {
+    setLoading(true);
+    setError(null);
+    window.scrollTo(0, 0); // Scroll to top when route changes
+    
+    try {
+      // Since backend doesn't have a specific get by ISBN endpoint for the book details,
+      // we fetch all books to map the details and the recommendations
+      const allBooks = await getBooks();
       
-      try {
-        // Since backend doesn't have a specific get by ISBN endpoint for the book details,
-        // we fetch all books to map the details and the recommendations
-        const allBooks = await getBooks();
-        
-        // Find current book details
-        const foundBook = allBooks.find(b => b.isbn === isbn);
-        if (!foundBook) {
-          setError('Book not found in the database.');
-          setLoading(false);
-          return;
-        }
-        setCurrentBook(foundBook);
-
-        // Fetch recommendations
-        try {
-          const recData = await getRecommendations(isbn);
-          if (recData.success && recData.recommendations) {
-            // Map the recommended ISBNs to full book objects
-            const recs = recData.recommendations.map(rec => {
-              const b = allBooks.find(ab => ab.isbn === rec.isbn);
-              return b ? { ...b, similarity: rec.similarity } : null;
-            }).filter(Boolean); // Filter out any nulls if an ISBN wasn't found
-            
-            setRecommendedBooks(recs);
-          }
-        } catch (recError) {
-          // If recommendation endpoint fails (e.g., 404), we just show empty recommendations
-          console.error("No recommendations found or error fetching them.");
-          setRecommendedBooks([]);
-        }
-        
+      // Find current book details
+      const foundBook = allBooks.find(b => b.isbn === isbn);
+      if (!foundBook) {
+        setError('Book not found in the database.');
         setLoading(false);
-      } catch (err) {
-        setError('Failed to load data. Please try again later.');
-        setLoading(false);
+        return;
       }
-    };
+      setCurrentBook(foundBook);
 
+      // Fetch recommendations
+      try {
+        const recData = await getRecommendations(isbn);
+        if (recData.success && recData.recommendations) {
+          // Map the recommended ISBNs to full book objects
+          const recs = recData.recommendations.map(rec => {
+            const b = allBooks.find(ab => ab.isbn === rec.isbn);
+            return b ? { ...b, similarity: rec.similarity } : null;
+          }).filter(Boolean); // Filter out any nulls if an ISBN wasn't found
+          
+          setRecommendedBooks(recs);
+        }
+      } catch (recError) {
+        // If recommendation endpoint fails (e.g., 404), we just show empty recommendations
+        console.error("No recommendations found or error fetching them.");
+        setRecommendedBooks([]);
+      }
+      
+    } catch (err) {
+      setError('Failed to load book details. Please check your connection.');
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
     if (isbn) {
       fetchData();
     }
@@ -73,17 +76,9 @@ function BookDetailPage() {
         <Link to="/" className="back-link">&larr; Back to Home</Link>
       </div>
 
-      {loading && (
-        <div className="placeholder-content">
-          <p>Loading book details...</p>
-        </div>
-      )}
+      {loading && <LoadingSpinner message="Loading book details..." />}
 
-      {error && (
-        <div className="placeholder-content">
-          <p className="error-text" style={{ color: '#ef4444' }}>{error}</p>
-        </div>
-      )}
+      {error && <ErrorMessage message={error} onRetry={fetchData} />}
 
       {!loading && !error && currentBook && (
         <>
@@ -116,9 +111,11 @@ function BookDetailPage() {
                 ))}
               </div>
             ) : (
-              <div className="placeholder-content">
-                <p>No recommendations available for this book.</p>
-              </div>
+              <EmptyState 
+                title="No Recommendations" 
+                message="We don't have any specific recommendations for this book yet." 
+                icon="🔮"
+              />
             )}
           </div>
         </>
