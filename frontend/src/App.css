@@ -81,3 +81,11 @@
   font-family: monospace;
   display: inline-block;
 }
+
+/* Grid Layouts */
+.books-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+  gap: 2rem;
+  padding: 1rem 0;
+}
