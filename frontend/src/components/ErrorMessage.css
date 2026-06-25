@@ -3,11 +3,13 @@
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  padding: 3rem 2rem;
-  margin: 2rem auto;
+  padding: 4rem 2rem;
+  margin: 3rem auto;
   max-width: 500px;
-  border-radius: 16px;
-  border: 1px solid rgba(239, 68, 68, 0.3); /* Red tinted border */
+  border-radius: 24px;
+  border: 1px solid rgba(239, 68, 68, 0.2); 
+  background-color: var(--bg-white);
+  box-shadow: var(--shadow-card);
   text-align: center;
 }
 
@@ -17,22 +19,28 @@
 }
 
 .error-title {
-  color: #ef4444; /* Tailwind red-500 */
+  color: #ef4444; 
   font-size: 1.5rem;
   margin-bottom: 0.5rem;
+  font-weight: 700;
+  letter-spacing: -0.01em;
 }
 
 .error-text {
   color: var(--text-secondary);
-  margin-bottom: 1.5rem;
+  margin-bottom: 2rem;
+  font-size: 1.1rem;
 }
 
 .retry-btn {
-  background-color: transparent;
-  border: 1px solid var(--accent-primary);
-  color: var(--text-primary);
+  background-color: #ef4444;
+  color: white;
+  border: none;
+  box-shadow: 0 4px 12px rgba(239, 68, 68, 0.2);
 }
 
 .retry-btn:hover {
-  background-color: var(--accent-primary);
+  background-color: #dc2626;
+  transform: translateY(-2px);
+  box-shadow: 0 6px 16px rgba(239, 68, 68, 0.3);
 }

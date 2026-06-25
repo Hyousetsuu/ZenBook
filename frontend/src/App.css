@@ -5,87 +5,178 @@
   min-height: 100vh;
 }
 
-.navbar {
+.header-wrapper {
+  position: sticky;
+  top: 1.5rem;
+  z-index: 100;
+  display: flex;
+  justify-content: center;
+  padding: 0 1rem;
+  pointer-events: none; /* Let clicks pass through outside the nav */
+}
+
+.floating-navbar {
   display: flex;
   align-items: center;
-  padding: 1rem 2rem;
-  position: sticky;
-  top: 0;
-  z-index: 100;
+  justify-content: space-between;
+  width: 100%;
+  max-width: 600px;
+  background-color: var(--bg-dark);
+  color: var(--text-light);
+  padding: 0.75rem 1.5rem;
+  border-radius: 9999px;
+  box-shadow: var(--shadow-nav);
+  pointer-events: auto;
 }
 
 .navbar-brand {
-  font-size: 1.5rem;
+  font-size: 1.125rem;
   font-weight: 700;
-  color: var(--text-primary);
+  color: var(--text-light) !important;
   display: flex;
   align-items: center;
   gap: 0.5rem;
+  letter-spacing: -0.01em;
 }
 
-.main-content {
-  flex: 1;
-  padding: 2rem 0;
+.navbar-brand:hover {
+  opacity: 0.9;
 }
 
-.footer {
-  text-align: center;
-  padding: 1.5rem;
-  color: var(--text-secondary);
-  font-size: 0.875rem;
-  border-top: 1px solid var(--glass-border);
-  border-bottom: none; /* Override glass-effect border */
-}
-
-/* Page Level Layouts */
-.page-header {
-  margin-bottom: 2rem;
-  text-align: center;
-}
-
-.page-header .subtitle {
-  color: var(--text-secondary);
-  font-size: 1.125rem;
-  margin-top: 0.5rem;
-}
-
-.placeholder-content {
-  background: var(--glass-bg);
-  backdrop-filter: blur(10px);
-  -webkit-backdrop-filter: blur(10px);
-  border: 1px solid var(--glass-border);
-  border-radius: 12px;
-  padding: 3rem;
-  text-align: center;
-  box-shadow: var(--glass-shadow);
+.navbar-links {
   display: flex;
-  flex-direction: column;
   align-items: center;
   gap: 1.5rem;
 }
 
+.nav-link {
+  color: var(--text-light);
+  font-size: 0.9rem;
+  font-weight: 500;
+  text-decoration: none;
+  opacity: 0.8;
+  transition: opacity 0.2s;
+}
+
+.nav-link:hover {
+  opacity: 1;
+}
+
+.nav-icon {
+  color: var(--text-light);
+  display: flex;
+  align-items: center;
+  opacity: 0.8;
+  transition: opacity 0.2s, transform 0.2s;
+}
+
+.nav-icon:hover {
+  opacity: 1;
+  transform: scale(1.1);
+}
+
+@media (max-width: 640px) {
+  .hidden-mobile {
+    display: none;
+  }
+  .navbar-links {
+    gap: 1rem;
+  }
+  .floating-navbar {
+    padding: 0.75rem 1rem;
+  }
+  .header-wrapper {
+    padding: 0 0.5rem;
+  }
+}
+
+.main-content {
+  flex: 1;
+  padding: 4rem 0 6rem 0;
+}
+
+.footer {
+  text-align: center;
+  padding: 4rem 1.5rem;
+  background-color: var(--bg-dark);
+  color: var(--text-light);
+  font-size: 0.875rem;
+  margin-top: auto;
+}
+
+/* Page Level Layouts */
+.page-header {
+  margin-bottom: 4rem;
+  text-align: center;
+}
+
+.page-header h1 {
+  font-size: 3.5rem;
+  letter-spacing: -0.03em;
+  line-height: 1.08;
+  margin-bottom: 1rem;
+}
+
+.page-header .subtitle {
+  color: var(--text-secondary);
+  font-size: 1.25rem;
+  max-width: 600px;
+  margin: 0 auto;
+}
+
+@media (max-width: 768px) {
+  .page-header h1 {
+    font-size: 2.5rem;
+  }
+}
+
 .back-link {
   display: inline-block;
-  margin-bottom: 1rem;
+  margin-bottom: 2rem;
   color: var(--text-secondary);
+  font-weight: 600;
+  font-size: 0.9rem;
 }
 
 .back-link:hover {
   color: var(--text-primary);
-}
-
-.isbn-tag {
-  background: var(--bg-secondary);
-  padding: 0.5rem 1rem;
-  border-radius: 6px;
-  font-family: monospace;
-  display: inline-block;
+  transform: translateX(-4px);
 }
 
 /* Grid Layouts */
 .books-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
-  gap: 2rem;
+  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+  gap: 1.5rem;
   padding: 1rem 0;
+}
+
+@media (max-width: 768px) {
+  .books-grid {
+    grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+    gap: 1rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .books-grid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 0.75rem;
+  }
+}
+
+/* Route Transitions */
+.fade-in-up {
+  animation: fadeInUp 0.5s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+}
+
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(15px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
